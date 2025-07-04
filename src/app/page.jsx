@@ -51,14 +51,33 @@ export default function Home() {
       setLoading(false)
     }
   }
+  // useEffect(() => {
+  //   console.info(elvxk);
+  //   fetch('/api/allow')
+  //     .then(res => res.text())
+  //     .then(text => setAllowed(text === 'true'))
+  //     .catch(() => setAllowed(false))
+  // }, []);
+
   useEffect(() => {
     console.info(elvxk);
-    fetch('/api/allow')
-      .then(res => res.text())
-      .then(text => setAllowed(text === 'true'))
-      .catch(() => setAllowed(false))
-  }, []);
+    const checkIP = async () => {
+      try {
+        const res = await fetch('https://api.ipify.org?format=json')
+        const data = await res.json()
+        const ip = data.ip
+        //        setClientIp(ip)
 
+        const allowedIps = ['101.50.0.12', '101.50.1.70']
+        setAllowed(allowedIps.includes(ip))
+      } catch (err) {
+        console.error('Gagal mendapatkan IP:', err)
+        setAllowed(false)
+      }
+    }
+
+    checkIP()
+  }, [])
   return (
 
     <div className="container mx-auto px-6">
@@ -130,7 +149,7 @@ export default function Home() {
             {allowed && isPtr &&
               <Card className="bg-white">
                 <CardContent className="flex flex-col justify-center items-center">
-                  <img src="https://static-00.iconduck.com/assets.00/openvpn-icon-2048x2048-crty1636.png" alt="openVPN" className="h-7 w-7" />
+                  {/* <img src="https://static-00.iconduck.com/assets.00/openvpn-icon-2048x2048-crty1636.png" alt="openVPN" className="h-7 w-7" /> */}
                   <h1 className="mb-2 text-lg">Hallo Sobat VPN</h1>
                   {Object.entries(result)
                     .filter(([key]) => key === 'ptr')
